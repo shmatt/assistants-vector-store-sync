@@ -1,0 +1,24 @@
+name: 'Assistants Vector Store Sync'
+description:
+  'A GitHub action to sync files from your repository to an OpenAI Assistants v2 Vector Store'
+author: 'shmatt'
+
+branding:
+  icon: 'refresh-cw'
+  color: 'orange'
+
+inputs:
+  pattern:
+    description: 'A glob pattern matching the files to sync'
+    required: false
+    default: '**/*.md'
+  token:
+    description: 'An OpenAPI API token'
+    required: true
+  key: 
+    description: 'A key used to identify the synced files and the vector store.'
+    required: false
+
+runs:
+  using: node20
+  main: dist/index.js
