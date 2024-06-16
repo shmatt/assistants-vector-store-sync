@@ -1,6 +1,6 @@
 # Assistants Vector Store Sync
 
-A GitHub action to sync files from your repository to an OpenAI Assistants v2 Vector Store
+A GitHub action to sync files from your repository to an [OpenAI Assistants v2 Vector Store](https://platform.openai.com/docs/assistants/tools/file-search/vector-stores).
 
 Perfect for turning a static website, Obsidian vault, or a project's source code into a knowledge base for a ChatGPT assistant.
 
@@ -14,7 +14,7 @@ Perfect for turning a static website, Obsidian vault, or a project's source code
 
 - Will filter out both unsuported and empty files.
 
-- Defaults to all markdown files in the repository, but can be set to other files types or paths by using a glob patter.
+- Defaults to all markdown files in the repository, but can be set to other files types or paths by using a glob pattern.
 
 
 ## Inputs
@@ -29,7 +29,7 @@ Perfect for turning a static website, Obsidian vault, or a project's source code
 ```yaml
 - uses: actions/checkout@v3
 
-- name: Create index of frontmatter
+- name: Sync markdown files to Vector Store
   uses: shmatt/assistants-vector-store-sync@v1
   with:
     pattern: "**/*.md"
@@ -41,7 +41,7 @@ Perfect for turning a static website, Obsidian vault, or a project's source code
 
 The action uses a key, which is derived from the repository name (without the owner prefix) but may be provided via the `key` input.
 
-It will look for a Vector Store that has metadata with the metadata key `key` set to the provided value / repository name. If one doesn't exist, it will be created with the name also set the value.
+It will look for a Vector Store that has [metadata](https://platform.openai.com/docs/api-reference/vector-stores/create) with the metadata key `key` set to the provided value / repository name. If one doesn't exist, it will be created with the name also set to the value.
 
 For example, if the key or repostory name is `knowledge-base`, the Vector Store as JSON would look like:
 
@@ -64,7 +64,7 @@ The action will then;
 2. remove deleted or replaced files; and
 3. ensure files are added to the Vector Store.
 
-You can then attach the Vector Store to an Assistant using the `tool_resources` field in your code, or manually in the OpenAI Assistants playground.
+You can then attach the Vector Store to an [Assistant](https://platform.openai.com/docs/api-reference/assistants/createAssistant) using the `tool_resources` field in your code, or manually in the OpenAI [Assistants playground](https://platform.openai.com/playground/assistants).
 
 ## Contributing
 
