@@ -1,7 +1,7 @@
 {
   "name": "asssitants-vector-store-sync",
   "description": "A GitHub action to sync files from your repository to an OpenAI Assistants v2 Vector Store",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "author": "shmatt",
   "private": false,
   "homepage": "https://github.com/shmatt/assistants-vector-store-sync",

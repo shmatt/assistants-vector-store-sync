@@ -1,4 +1,4 @@
-name: 'Assistants Vector Store Sync'
+name: 'ChatGPT Assistants Vector Store Sync'
 description:
   'A GitHub action to sync files from your repository to an OpenAI Assistants v2 Vector Store'
 author: 'shmatt'
