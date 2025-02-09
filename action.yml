@@ -1,6 +1,7 @@
 name: 'ChatGPT Assistants Vector Store Sync'
 description:
-  'A GitHub action to sync files from your repository to an OpenAI Assistants v2 Vector Store'
+  'A GitHub action to sync files from your repository to an OpenAI Assistants v2
+  Vector Store'
 author: 'shmatt'
 
 branding:
@@ -15,7 +16,7 @@ inputs:
   token:
     description: 'An OpenAPI API token'
     required: true
-  key: 
+  key:
     description: 'A key used to identify the synced files and the vector store.'
     required: false
 

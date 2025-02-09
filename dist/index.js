@@ -43973,10 +43973,10 @@ const openai_1 = __importStar(__nccwpck_require__(47));
 const simple_git_1 = __nccwpck_require__(9103);
 const crypto_1 = __nccwpck_require__(6113);
 function createMD5(filePath) {
-    return new Promise((res) => {
+    return new Promise(res => {
         const hash = (0, crypto_1.createHash)('md5');
         const rStream = (0, fs_1.createReadStream)(filePath);
-        rStream.on('data', (data) => {
+        rStream.on('data', data => {
             hash.update(data);
         });
         rStream.on('end', () => {
@@ -43985,7 +43985,28 @@ function createMD5(filePath) {
     });
 }
 function isSupportedFileType(file) {
-    const supportedExtensions = ['.c', '.cs', '.cpp', '.doc', '.docx', '.html', '.java', '.json', '.md', '.pdf', '.php', '.pptx', '.py', '.rb', '.tex', '.txt', '.css', '.js', '.sh', '.ts'];
+    const supportedExtensions = [
+        '.c',
+        '.cs',
+        '.cpp',
+        '.doc',
+        '.docx',
+        '.html',
+        '.java',
+        '.json',
+        '.md',
+        '.pdf',
+        '.php',
+        '.pptx',
+        '.py',
+        '.rb',
+        '.tex',
+        '.txt',
+        '.css',
+        '.js',
+        '.sh',
+        '.ts'
+    ];
     const ext = path_1.default.extname(file);
     if (ext === '') {
         return false;
@@ -44021,7 +44042,8 @@ async function run() {
         const openai = new openai_1.default({ apiKey: token });
         const files = await openai.files.list();
         // Filter this list based on the key
-        const keyFiles = files.data.filter((file) => file.filename.startsWith(`${key}-`) || file.filename.startsWith(`${key}/`));
+        const keyFiles = files.data.filter((file) => file.filename.startsWith(`${key}-`) ||
+            file.filename.startsWith(`${key}/`));
         core.info(`Found ${keyFiles.length} matching files in OpenAI Organization`);
         // Get or create the Vector Store
         let vectorStore;
@@ -44105,7 +44127,8 @@ async function run() {
         // Create a list of files to remove from the OpenAI Organization
         keyFiles.forEach((file) => {
             const data = allFiles.find((f) => f.keyedPath == file.filename);
-            if (data == null && removeFiles.find((f) => f.keyedPath == file.filename) == null) {
+            if (data == null &&
+                removeFiles.find((f) => f.keyedPath == file.filename) == null) {
                 removeFiles.push({ keyedPath: file.filename, id: file.id });
                 core.info(`Removing missing or changed file: ${file.filename}`);
             }
@@ -44126,9 +44149,7 @@ async function run() {
         if (removeFiles.length > 0) {
             // Remove files from the remove list
             core.info(`Removing ${removeFiles.length} files from OpenAI Organization`);
-            let removeFilesPromises = removeFiles.map((file) => file.id
-                ? openai.files.del(file.id)
-                : Promise.resolve(null));
+            let removeFilesPromises = removeFiles.map((file) => file.id ? openai.files.del(file.id) : Promise.resolve(null));
             await Promise.all(removeFilesPromises);
             core.info(`Files succesfully removed from OpenAI Organization`);
         }
@@ -44147,13 +44168,18 @@ async function run() {
             core.info(`Files succesfully uploaded to vector store`);
         }
         if (addToVectorStoreFiles.length > 0) {
-            // Add files to the vector store that have been uploaded already
+            // Add files to the vector store that have been uploaded already, in batches of 500
             core.info(`Adding ${addToVectorStoreFiles.length} files to vector store`);
-            addToVectorStoreFiles.forEach((file) => core.debug(`Adding file: ${file.keyedPath}`));
-            await openai.beta.vectorStores.fileBatches.create(vectorStore.id, { file_ids: addToVectorStoreFiles.map((file) => file.id) });
+            for (let i = 0; i < addToVectorStoreFiles.length; i += 500) {
+                const batch = addToVectorStoreFiles.slice(i, i + 500);
+                core.info(`Adding batch of ${batch.length} files to vector store`);
+                await openai.beta.vectorStores.fileBatches.create(vectorStore.id, {
+                    file_ids: batch.map((file) => file.id)
+                });
+            }
             core.info(`Files succesfully added to vector store`);
         }
-        core.info("Action complete");
+        core.info('Action complete');
     }
     catch (error) {
         // Fail the workflow run if an error occurs
