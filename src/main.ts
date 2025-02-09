@@ -250,11 +250,14 @@ export async function run(): Promise<void> {
 
 		if (addToVectorStoreFiles.length > 0) {
 
-			// Add files to the vector store that have been uploaded already
+			// Add files to the vector store that have been uploaded already, in batches of 500
 			core.info(`Adding ${addToVectorStoreFiles.length} files to vector store`);
 
-			addToVectorStoreFiles.forEach((file: FileData) => core.debug(`Adding file: ${file.keyedPath}`));
-			await openai.beta.vectorStores.fileBatches.create(vectorStore.id, { file_ids: addToVectorStoreFiles.map((file: FileData) => file.id!) });
+			for (let i = 0; i < addToVectorStoreFiles.length; i += 500) {
+				const batch = addToVectorStoreFiles.slice(i, i + 500);
+				core.info(`Adding batch of ${batch.length} files to vector store`);
+				await openai.beta.vectorStores.fileBatches.create(vectorStore.id, { file_ids: batch.map((file: FileData) => file.id!) });
+			}
 
 			core.info(`Files succesfully added to vector store`);
 		}
